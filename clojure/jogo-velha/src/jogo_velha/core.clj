@@ -55,7 +55,7 @@
     (if playing
       (do
         (show-board board)
-        (let [move (vec (get-input (format "Mover for player %s: " player)))]
+        (let [move (vec (get-input (format "Move for player %s: " player)))]
           (if (validate-input move)
             (let [indexes (get-indexes move)]
              (if (is-valid-move board indexes)
@@ -70,7 +70,7 @@
                   is-draw (println "No one wins"))
                 (recur next-board next-player next-scores (wanna-play? victory is-draw)))
               (do
-                (println (format "Invalid move"))
+                (println "Invalid move")
                 (recur board player scores playing))))
             (do
               (println (format "Invalid input"))
