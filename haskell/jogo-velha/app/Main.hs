@@ -3,6 +3,7 @@ module Main (main) where
 import Lib
 import Data.Char (digitToInt)
 import Data.Map (Map, fromList, insertWith)
+import Control.Monad (when)
 
 showBoard :: [[String]] -> IO()
 showBoard = mapM_ (\line -> putStrLn ("[" ++ unwords (map show line) ++ "]"))
@@ -70,17 +71,16 @@ start board player scores playing = do
         let j = (indexes !! 1)
         let newBoard = makeMove board player i j
         let victory = isWinner newBoard player
-        let isDraw = (not victory) && (isBoardFull board)
+        let isDraw = (not victory) && (isBoardFull newBoard)
         let nextPlayer = chooseNextPlayer player
         let nextBoard = chooseNextBoard victory isDraw newBoard
         let nextScores = updateScores victory isDraw scores player
 
-        if victory then do
+        when victory $ do
           putStrLn ("Player " ++ player ++ " is the winner")
-        else if isDraw then do
+
+        when isDraw $ do
           putStrLn "No one wins"
-        else do
-          putStrLn ""
         
         continuePlaying <- (wannaPlay victory isDraw)
         start nextBoard nextPlayer nextScores continuePlaying
