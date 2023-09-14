@@ -5,13 +5,14 @@ module Lib
       getElem,
       inRange,
       isVictory,
-      getAllVictoryPossibilities
+      getAllVictoryPossibilities,
+      isBoardFull
     ) where
 
 import Data.Char (isDigit)
 
 createBoard :: [[String]]
-createBoard = [["1", "2", "3"], ["4", "5", "6"],["7", "8", "9"]]
+createBoard = [[".", ".", "."], [".", ".", "."],[".", ".", "."]]
 
 isNumeric :: String -> Bool
 isNumeric [] = False
