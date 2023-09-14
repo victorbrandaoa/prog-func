@@ -1,1 +1,1 @@
-# hacktober-prog-func
+# prog-func
