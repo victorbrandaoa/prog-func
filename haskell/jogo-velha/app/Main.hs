@@ -2,6 +2,7 @@ module Main (main) where
 
 import Lib
 import Data.Char (digitToInt)
+import Data.Map (Map, fromList, insertWith)
 
 showBoard :: [[String]] -> IO()
 showBoard = mapM_ (\line -> putStrLn ("[" ++ unwords (map show line) ++ "]"))
@@ -40,17 +41,23 @@ chooseNextBoard victory isDraw newBoard | victory || isDraw = createBoard
 castToInt :: String -> [Int]
 castToInt move = (map digitToInt move)
 
-wannaPlay :: Bool -> Bool -> Bool
-wannaPlay victory isDraw = True
+wannaPlay :: Bool -> Bool -> IO Bool
+wannaPlay victory isDraw = do
+  if (victory || isDraw) then do
+    input <- (getInput "Wanna play another game? (y/n)")
+    return (input == "y")
+  else do
+    return True
 
-updateScores :: Bool -> Bool -> String -> String -> String
-updateScores victory isDraw scores player = "SCORES"
+updateScores :: Bool -> Bool -> Map String Int -> String -> Map String Int
+updateScores victory isDraw scores player | (not victory) || isDraw = scores
+                                          | otherwise = insertWith (+) player 1 scores
 
 main :: IO ()
 main = do
-  start (createBoard) "X" "SCORES" True
+  start (createBoard) "X" (fromList [("X", 0), ("O", 0)]) True
 
-start :: [[String]] -> String -> String -> Bool -> IO()
+start :: [[String]] -> String -> Map String Int -> Bool -> IO()
 start board player scores playing = do
   if playing then do
     showBoard board
@@ -75,7 +82,8 @@ start board player scores playing = do
         else do
           putStrLn ""
         
-        start nextBoard nextPlayer nextScores (wannaPlay victory isDraw)
+        continuePlaying <- (wannaPlay victory isDraw)
+        start nextBoard nextPlayer nextScores continuePlaying
       else do
         putStrLn "Invalid move"
         start board player scores playing
@@ -84,4 +92,4 @@ start board player scores playing = do
       putStrLn "Invalid input"
       start board player scores playing
   else
-    putStrLn ("End game: " ++ scores)
+    putStrLn ("End game: " ++ (show scores))
