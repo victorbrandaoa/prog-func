@@ -6,19 +6,23 @@ module Lib
       inRange,
       isVictory,
       getAllVictoryPossibilities,
-      isBoardFull
+      isBoardFull,
+      Cell,
+      Board
     ) where
 
 import Data.Char (isDigit)
 
-createBoard :: [[String]]
-createBoard = [[".", ".", "."], [".", ".", "."],[".", ".", "."]]
+type Cell = String
+type Board = [[Cell]]
+
+createBoard :: Board
+createBoard = replicate 3 (replicate 3 ".")
 
 isNumeric :: String -> Bool
-isNumeric [] = False
-isNumeric move = all isDigit move
+isNumeric = all isDigit
 
-getElem :: [[String]] -> [Int] -> String
+getElem :: Board -> [Int] -> Cell
 getElem board indexes = do
     let i = (indexes !! 0)
     let j = (indexes !! 1)
@@ -27,24 +31,24 @@ getElem board indexes = do
 inRange :: Int -> Int -> Int -> Bool
 inRange num start end = (num >= start) && (num <= end)
 
-getColumns :: [[String]] -> [[String]]
+getColumns :: Board -> Board
 getColumns ([]:_) = []
 getColumns matrix = (map head matrix) : getColumns (map tail matrix)
 
-getPrimaryDiagonal :: [[String]] -> [String]
+getPrimaryDiagonal :: Board -> [Cell]
 getPrimaryDiagonal board = [(getElem board [index, index]) | index <- [0..2]]
 
-getSecondaryDiagonal :: [[String]] -> [String]
+getSecondaryDiagonal :: Board -> [Cell]
 getSecondaryDiagonal board = [(getElem board [index, (3 - (index + 1))]) | index <- [0..2]]
 
-getAllVictoryPossibilities :: [[String]] -> [[String]]
+getAllVictoryPossibilities :: Board -> Board
 getAllVictoryPossibilities board = board ++ (getColumns board) ++ [(getPrimaryDiagonal board), (getSecondaryDiagonal board)]
 
-isVictory :: [String] -> String -> Bool
-isVictory possibilitie lastPlayer = all (\e -> e == lastPlayer) possibilitie
+isVictory :: [Cell] -> Cell -> Bool
+isVictory possibilitie lastPlayer = all (== lastPlayer) possibilitie
 
-isBoardFull :: [[String]] -> Bool
-isBoardFull board = all (\e -> e /= ".") (concat board)
+isBoardFull :: Board -> Bool
+isBoardFull board = all (/= ".") (concat board)
 
 someFunc :: IO()
 someFunc = putStrLn "someFunc"

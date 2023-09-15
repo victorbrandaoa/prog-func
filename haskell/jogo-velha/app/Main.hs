@@ -5,7 +5,7 @@ import Data.Char (digitToInt)
 import Data.Map (Map, fromList, insertWith)
 import Control.Monad (when)
 
-showBoard :: [[String]] -> IO()
+showBoard :: Board -> IO()
 showBoard = mapM_ (\line -> putStrLn ("[" ++ unwords (map show line) ++ "]"))
 
 getInput :: String -> IO String
@@ -17,25 +17,25 @@ getInput message = do
 validateInput :: String -> Bool
 validateInput input = (length input == 2) && (isNumeric input)
 
-isValidMove :: [[String]] -> [Int] -> Bool
+isValidMove :: Board -> [Int] -> Bool
 isValidMove board indexes = (all (\num -> (inRange num 0 2)) indexes) && ((getElem board indexes) == ".")
 
-chooseNextPlayer :: String -> String
+chooseNextPlayer :: Cell -> Cell
 chooseNextPlayer "X" = "O"
 chooseNextPlayer "O" = "X"
 
-isWinner :: [[String]] -> String -> Bool
+isWinner :: Board -> Cell -> Bool
 isWinner board player = any (== True) (map (\p -> isVictory p player) (getAllVictoryPossibilities board))
 
-editRow :: [String] -> String -> Int -> [String]
+editRow :: [Cell] -> Cell -> Int -> [Cell]
 editRow (_:xs) player 0 = player:xs
 editRow (x:xs) player i = [x] ++ (editRow xs player (i - 1))
 
-makeMove :: [[String]] -> String -> Int -> Int -> [[String]]
+makeMove :: Board -> Cell -> Int -> Int -> Board
 makeMove (x:xs) player 0 j = (editRow x player j):xs
 makeMove (x:xs) player i j = [x] ++ (makeMove xs player (i - 1) j)
 
-chooseNextBoard :: Bool -> Bool -> [[String]] -> [[String]]
+chooseNextBoard :: Bool -> Bool -> Board -> Board
 chooseNextBoard victory isDraw newBoard | victory || isDraw = createBoard
                                         | otherwise = newBoard
 
@@ -50,7 +50,7 @@ wannaPlay victory isDraw = do
   else do
     return True
 
-updateScores :: Bool -> Bool -> Map String Int -> String -> Map String Int
+updateScores :: Bool -> Bool -> Map String Int -> Cell -> Map String Int
 updateScores victory isDraw scores player | (not victory) || isDraw = scores
                                           | otherwise = insertWith (+) player 1 scores
 
@@ -58,7 +58,7 @@ main :: IO ()
 main = do
   start (createBoard) "X" (fromList [("X", 0), ("O", 0)]) True
 
-start :: [[String]] -> String -> Map String Int -> Bool -> IO()
+start :: Board -> Cell -> Map String Int -> Bool -> IO()
 start board player scores playing = do
   if playing then do
     showBoard board
