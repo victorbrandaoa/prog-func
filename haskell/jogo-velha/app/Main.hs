@@ -23,15 +23,18 @@ isValidMove board indexes = (all (\num -> (inRange num 0 2)) indexes) && ((getEl
 chooseNextPlayer :: Cell -> Cell
 chooseNextPlayer "X" = "O"
 chooseNextPlayer "O" = "X"
+chooseNextPlayer _ = error "Invalid cell value"
 
 isWinner :: Board -> Cell -> Bool
 isWinner board player = any (== True) (map (\p -> isVictory p player) (getAllVictoryPossibilities board))
 
 editRow :: [Cell] -> Cell -> Int -> [Cell]
+editRow [] _ _ = error "Empty row"
 editRow (_:xs) player 0 = player:xs
 editRow (x:xs) player i = [x] ++ (editRow xs player (i - 1))
 
 makeMove :: Board -> Cell -> Int -> Int -> Board
+makeMove [] _ _ _ = error "Empty board"
 makeMove (x:xs) player 0 j = (editRow x player j):xs
 makeMove (x:xs) player i j = [x] ++ (makeMove xs player (i - 1) j)
 
