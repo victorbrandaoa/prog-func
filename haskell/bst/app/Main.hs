@@ -9,4 +9,7 @@ exampleTree =
     (Node 7 (Node 6 NIL NIL) (Node 9 NIL NIL))
 
 main :: IO ()
-main = exampleTree
+main = do
+  let t = exampleTree
+  print (isBST t)
+  putStrLn (formatTree t)

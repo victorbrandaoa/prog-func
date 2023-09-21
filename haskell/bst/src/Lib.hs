@@ -1,26 +1,33 @@
 module Lib
-    ( someFunc,
-      Node
-    ) where
+  ( BinaryTree(..),
+    formatTree,
+    getTreeLevels,
+    isBST,
+    mirror
+  ) where
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+import Data.List (intercalate)
 
 data BinaryTree a = NIL | Node a (BinaryTree a) (BinaryTree a) deriving (Eq, Show)
 
 leaves (Node a NIL NIL) = [a]
 leaves (Node a left right) = leaves left ++ leaves right
 
+elementsAtLevel NIL 0 = [(-1), (-1)]
 elementsAtLevel (Node a _ _) 0 = [a]
+elementsAtLevel (Node a NIL right) k = [(-1)] ++ (elementsAtLevel right (k - 1))
+elementsAtLevel (Node a left NIL) k = (elementsAtLevel left (k - 1)) ++ [(-1)]
 elementsAtLevel (Node a left right) k = elementsAtLevel left (k - 1) ++ elementsAtLevel right (k - 1)
 
+mirror NIL = NIL
 mirror (Node a NIL NIL) = (Node a NIL NIL)
 mirror (Node a left right) = (Node a (mirror right) (mirror left))
 
 mapTree _ NIL = NIL
 mapTree f (Node a left right) = (Node (f a) (mapTree f left) (mapTree f right))
 
-deep ele (Node a left right) = undefined
+height NIL = -1
+height (Node a left right) = 1 + (max (height left) (height right))
 
 sizeBT NIL = 0
 sizeBT (Node a left right) = 1 + sizeBT left + sizeBT right
@@ -37,8 +44,8 @@ minimumBT (Node a left right) = min a (min (minimumBT left) (minimumBT right))
 
 isBST NIL = False
 isBST (Node a NIL NIL) = True
-isBST (Node a left right) | a > (maximumBT left) || a > (minimumBT right) = False
-                          | otherwise = True
+isBST (Node a left right) | a < (maximumBT left) || a > (minimumBT right) = False
+                          | otherwise = (isBST left) && (isBST right)
 
 insertBST NIL v = (Node v NIL NIL)
 insertBST (Node a left right) v | a > v = (Node a (insertBST left v) right)
@@ -82,3 +89,24 @@ postorder (Node a NIL NIL) = [a]
 postorder (Node a NIL right) = postorder right ++ [a]
 postorder (Node a left NIL) = postorder left ++ [a]
 postorder (Node a left right) = postorder left ++ postorder right ++ [a]
+
+
+-- Only for printing the tree
+indent maxLevel level = (2 ** (maxLevel - level)) - 1
+
+spacing maxLevel level = (2 ** (maxLevel - level + 1)) - 1
+
+multiplyString str 0 = ""
+multiplyString str n = str ++ (multiplyString str (n-1))
+
+getTreeLevels bst = getTreeLevels' bst (height bst)
+
+getTreeLevels' bst 0 = [(elementsAtLevel bst 0)]
+getTreeLevels' bst level = (getTreeLevels' bst (level - 1)) ++ [(elementsAtLevel bst level)]
+
+formatLevel elements maxLevel level = (multiplyString " " (indent maxLevel level)) ++ (intercalate (multiplyString " " (spacing maxLevel level)) (map (\e -> if e == "-1" then "" else e) (map show elements)))
+
+formatLevels [] _ _ = []
+formatLevels (x:xs) maxLevel level = [(formatLevel x maxLevel level)] ++ (formatLevels xs maxLevel (level + 1))
+
+formatTree tree = (intercalate "\n" (formatLevels (getTreeLevels tree) (height tree) (-1)))
