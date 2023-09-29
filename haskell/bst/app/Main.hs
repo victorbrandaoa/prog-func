@@ -12,4 +12,3 @@ main :: IO ()
 main = do
   let t = exampleTree
   print (isBST t)
-  putStrLn (formatTree t)

@@ -1,7 +1,5 @@
 module Lib
   ( BinaryTree(..),
-    formatTree,
-    getTreeLevels,
     isBST,
     mirror
   ) where
@@ -63,18 +61,6 @@ searchBST (Node a left right) e | a == e = (Node a left right)
                                 | e > a = searchBST right e
                                 | e < a = searchBST left e
 
--- predecessor (Node a left right) e = maximumBT (getLeftBST subBST)
---                                     where
---                                       subBST = searchBST (Node a left right) e
-
--- sucessor (Node a left right) e = minimumBT (getRightBST subBST)
---                                  where
---                                    subBST = searchBST (Node a left right) e
-
-predecessor = undefined
-sucessor = undefined
-remove = undefined
-
 order (Node a NIL NIL) = [a]
 order (Node a NIL right) = [a] ++ order right
 order (Node a left NIL) = order left ++ [a]
@@ -89,3 +75,12 @@ postorder (Node a NIL NIL) = [a]
 postorder (Node a NIL right) = postorder right ++ [a]
 postorder (Node a left NIL) = postorder left ++ [a]
 postorder (Node a left right) = postorder left ++ postorder right ++ [a]
+
+remove NIL _ = NIL
+remove (Node a left right) v
+  | v < a = Node a (remove left v) right
+  | v > a = Node a left (remove right v)
+  | otherwise = case right of
+      NIL -> left
+      _   -> Node minValue left (remove right minValue)
+    where minValue = minimumBT right
