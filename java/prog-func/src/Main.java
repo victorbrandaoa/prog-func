@@ -4,11 +4,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
-        List<Celebritie> celebsList = new ArrayList<>();
-        Celebritie[] celebsArray = new Celebritie[8];
-        fillList(celebsList);
-        fillArray(celebsArray);
+        List<Celebritie> celebsList = makeList();
+        Celebritie[] celebsArray = makeArray();
 
         // Using list
         listExample(celebsList);
@@ -43,7 +40,9 @@ public class Main {
                 .orElse(0.0);
     }
 
-    public static void fillList(List<Celebritie> list) {
+    public static List<Celebritie> makeList() {
+        List<Celebritie> list = new ArrayList<>();
+
         list.add(new Celebritie("Taylor Swift", "Songwriting", Double.POSITIVE_INFINITY, 30000000.0));
         list.add(new Celebritie("Robert Downey Jr.", "Acting", 10.0, 20000000.0));
         list.add(new Celebritie("Jake Gyllenhaal", "Acting", 4.0, 1000.0));
@@ -52,9 +51,13 @@ public class Main {
         list.add(new Celebritie("Shawn Mendes", "Songwriting", 8.0, 1000000.0));
         list.add(new Celebritie("Travis Kelce", "Football player", 10.0, 1000000.0));
         list.add(new Celebritie("Joe Burrow", "Football player", 10.0, 1000000.0));
+
+        return list;
     }
 
-    public static void fillArray(Celebritie[] array) {
+    public static Celebritie[] makeArray() {
+        Celebritie[] array = new Celebritie[8];
+
         array[0] = new Celebritie("Taylor Swift", "Songwriting", Double.POSITIVE_INFINITY, 30000000.0);
         array[1] = new Celebritie("Robert Downey Jr.", "Acting", 10.0, 20000000.0);
         array[2] = new Celebritie("Jake Gyllenhaal", "Acting", 4.0, 1000.0);
@@ -63,5 +66,7 @@ public class Main {
         array[5] = new Celebritie("Shawn Mendes", "Songwriting", 8.0, 1000000.0);
         array[6] = new Celebritie("Travis Kelce", "Football player", 10.0, 1000000.0);
         array[7] = new Celebritie("Joe Burrow", "Football player", 10.0, 1000000.0);
+
+        return array;
     }
 }
