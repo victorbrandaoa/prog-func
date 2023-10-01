@@ -58,3 +58,24 @@
   (letfn [(fib-gen [a b]
             (lazy-seq (cons a (fib-gen b (+ a b)))))]
     (fib-gen 0 1)))
+
+(def celebs
+  '({:name "Taylor Swift" :course "Songwriting" :grade ##Inf :money 30000000}
+    {:name "Robert Downey Jr." :course "Acting" :grade 10 :money 20000000}
+    {:name "Jake Gyllenhaal" :course "Acting" :grade 4 :money 1000}
+    {:name "Olivia Rodrigo" :course "Songwriting" :grade 8 :money 100000}
+    {:name "Bruno Mars" :course "Songwriting" :grade 10 :money 10000000}
+    {:name "Shawn Mendes" :course "Songwriting" :grade 8 :money 1000000}
+    {:name "Travis Kelce" :course "Football player" :grade 10 :money 1000000}
+    {:name "Joe Burrow" :course "Football player" :grade 10 :money 1000000}))
+
+(defn filter-by-songwriters [data] (filter #(= (:course %) "Songwriting") data))
+(defn get-money [data] (map :money data))
+(defn sum-money [data] (reduce + data))
+(defn sum-songwriters-money []
+  (comp sum-money get-money filter-by-songwriters))
+
+;(reduce + (map :money (filter #(= (:course %) "Songwriting") celebs)))
+;(->> celebs (filter #(= (:course %) "Songwriting")) (map :money) (reduce +))
+;(-> celebs filter-by-songwriters get-money sum-money)
+;((sum-songwriters-money) celebs)
