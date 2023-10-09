@@ -16,10 +16,12 @@
         (func head) (recur (rest list) (conj resp head))
         :else (recur (rest list) resp)))))
 
-(defn my-reduce [list func acc]
+(defn my-reduce 
+  ([list func] (my-reduce (rest list) func (first list)))
+  ([list func acc]
   (if (empty? list)
     acc
-    (recur (rest list) func (func (first list) acc))))
+    (recur (rest list) func (func (first list) acc)))))
 
 (defn factorial-v1 [n]
   (if (= n 1N)
@@ -52,12 +54,14 @@
 (defn prime? [n]
   (not-any? zero? (map #(rem n %) (range 2 n))))
 
-(def primes (filter prime? (range)))
+(def primes (filter prime? (drop 2 (range))))
 
-(defn fib-seq []
+(defn fib-seq-generator []
   (letfn [(fib-gen [a b]
             (lazy-seq (cons a (fib-gen b (+ a b)))))]
-    (fib-gen 0 1)))
+    (fib-gen 0N 1N)))
+
+(def fib-seq (fib-seq-generator))
 
 (def celebs
   '({:name "Taylor Swift" :course "Songwriting" :grade ##Inf :money 30000000}
