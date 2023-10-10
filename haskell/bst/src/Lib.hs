@@ -4,8 +4,6 @@ module Lib
     mirror
   ) where
 
-import Data.List (intercalate)
-
 data BinaryTree a = NIL | Node a (BinaryTree a) (BinaryTree a) deriving (Eq, Show)
 
 leaves (Node a NIL NIL) = [a]
